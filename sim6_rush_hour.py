@@ -5,9 +5,10 @@ from scipy.stats import gamma
 # Parameters for the two gamma distributions (morning and evening peaks)
 k1, theta1 = 4, 0.5  # Morning peak (sharp)
 k2, theta2 = 6, 1    # Evening peak (broader)
+k3, theta3 = 3, 2    # Base level distribution for hours 0 to 8
 
 # Mixing proportions
-p1, p2 = 0.5, 0.5  # Equal weight for morning and evening
+p1, p2, p3 = 0.4, 0.4, 0.2  # Lower weight for early morning
 
 # Generate x values (time of day in hours)
 x = np.linspace(0, 24, 1000)
@@ -15,9 +16,10 @@ x = np.linspace(0, 24, 1000)
 # Calculate the bi-modal gamma distribution
 pdf1 = gamma.pdf(x - 8, k1, scale=theta1)  # Morning peak at 8 to 10
 pdf2 = gamma.pdf(x - 16, k2, scale=theta2)  # Evening peak at 16 to 19
+pdf3 = gamma.pdf(x, k3, scale=theta3)       # Base level for early hours
 
-# Combine the two gamma distributions
-pdf_combined = p1 * pdf1 + p2 * pdf2
+# Combine the three gamma distributions
+pdf_combined = p1 * pdf1 + p2 * pdf2 + p3 * pdf3
 pdf_combined /= np.trapz(pdf_combined, x)  # Normalize to make it a valid distribution
 
 # Simulate the number of people per hour
